@@ -2,9 +2,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <array>
 
-#include "VertexArray.h"
-#include "VertexBuffer.h"
+#include "RenderObject.h"
 #include "Program.h"
 
 namespace cbx { 
@@ -42,9 +42,7 @@ namespace cbx {
             GLFWwindow* m_Window = nullptr;
             bool m_Running = true;
             WindowOptions m_Options;
-            std::unique_ptr<VertexArray> vao = nullptr;
-            std::unique_ptr<VertexBuffer> ebo = nullptr;
-            std::unique_ptr<Program> program = nullptr;
+            std::array<std::unique_ptr<RenderObject>, 6> objs{};
     };
 
 }

@@ -1,5 +1,7 @@
 #include "Window.h"
 #include "VertexBuffer.h"
+#include "VertexArray.h"
+#include "Program.h"
 #include "ResourceManager.h"
 #include "Shader.h"
 #include <iostream>
@@ -45,30 +47,56 @@ void cbx::Window::Init()
 
 void cbx::Window::Run()
 {
-    float vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
+    float vertices1[] = {
+         0.0f,  0.5f, 0.0f,  // top right
+         0.0f, -0.5f, 0.0f,  // bottom right
+        -1.0f, -0.5f, 0.0f,  // bottom left
+        -1.0f,  0.5f, 0.0f,  // top left 
     };
-    unsigned int indices[] = {  // note that we start from 0!
+
+    float vertices2[] = {
+         0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f,  // top left 
+    };
+
+    unsigned int indices[] = {
         0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
+        1, 2, 3,   // second triangle
     }; 
 
     ResourceManager rm;
     Shader vertexShader(rm.FromFile("Vertex.Shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader(rm.FromFile("Fragment.Shader").c_str(), Shader::Type::FRAGMENT);
+    Shader fragmentShader1(rm.FromFile("Fragment1.Shader").c_str(), Shader::Type::FRAGMENT);
 
-    program = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader}));
-
-    VertexBuffer vbo = VertexBuffer(sizeof(vertices), vertices, GL_ARRAY_BUFFER);
-    vao = std::make_unique<VertexArray>();
-    vao->BindBuffer(vbo);
-    ebo = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
-
+    auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
+    auto vao1 = std::make_unique<VertexArray>();
+    auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
+    VertexBuffer vbo1(sizeof(vertices1), vertices1, GL_ARRAY_BUFFER);
+    vao1->BindBuffer(vbo1);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    Shader fragmentShader2(rm.FromFile("Fragment2.Shader").c_str(), Shader::Type::FRAGMENT);
+    auto program2 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader2}));
+
+    auto vao2 = std::make_unique<VertexArray>();
+    auto ebo2 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
+    VertexBuffer vbo2(sizeof(vertices2), vertices2, GL_ARRAY_BUFFER);
+    vao2->BindBuffer(vbo2);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    objs = std::array<std::unique_ptr<RenderObject>, 6> { 
+        std::move(program1), 
+        std::move(vao1), 
+        std::move(ebo1), 
+        std::move(program2), 
+        std::move(vao2), 
+        std::move(ebo2) 
+    };
+
 
     while (m_Running) 
     { 
@@ -81,11 +109,14 @@ void cbx::Window::OnUpdate()
     glClearColor(0.2f, 0.3f, 0.4f, 0.5f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    program->Bind();
-    vao->Bind();
-    ebo->Bind();
+    objs[0]->Bind();
+    objs[1]->Bind();
+    objs[2]->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    vao->Unbind();
+    objs[3]->Bind();
+    objs[4]->Bind();
+    objs[5]->Bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();

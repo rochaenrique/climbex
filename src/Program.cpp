@@ -7,7 +7,7 @@ cbx::Program::Program(std::initializer_list<cbx::Shader> initList)
     m_RendererId = glCreateProgram();
 
     for (const Shader& sh : initList) {
-        std::cout << "Attaching Shader ID: " << sh.getRendererId() << std::endl;
+        //std::cout << "Attaching Shader ID: " << sh.getRendererId() << std::endl;
         glAttachShader(m_RendererId, sh.getRendererId());
     }
 
