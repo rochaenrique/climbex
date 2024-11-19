@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "VertexBuffer.h"
+#include "ResourceManager.h"
 #include "Shader.h"
 #include <iostream>
 
@@ -45,35 +46,27 @@ void cbx::Window::Init()
 void cbx::Window::Run()
 {
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
     }; 
 
-    const char *vsSource = 
-        "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
-
-    const char *fsSource = 
-        "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\n\0";
-
-    Shader vertexShader(vsSource, Shader::Type::VERTEX);
-    Shader fragmentShader(fsSource, Shader::Type::FRAGMENT);
+    ResourceManager rm;
+    Shader vertexShader(rm.FromFile("Vertex.Shader").c_str(), Shader::Type::VERTEX);
+    Shader fragmentShader(rm.FromFile("Fragment.Shader").c_str(), Shader::Type::FRAGMENT);
 
     program = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader}));
 
-    VertexBuffer vbo(sizeof(vertices), vertices);
+    VertexBuffer vbo = VertexBuffer(sizeof(vertices), vertices, GL_ARRAY_BUFFER);
     vao = std::make_unique<VertexArray>();
     vao->BindBuffer(vbo);
+    ebo = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -81,8 +74,6 @@ void cbx::Window::Run()
     { 
         OnUpdate();
     }
-
-    program->~Program();
 };
 
 void cbx::Window::OnUpdate()
@@ -92,7 +83,8 @@ void cbx::Window::OnUpdate()
 
     program->Bind();
     vao->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    ebo->Bind();
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     vao->Unbind();
 
     glfwSwapBuffers(m_Window);

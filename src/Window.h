@@ -4,11 +4,13 @@
 #include <string>
 
 #include "VertexArray.h"
+#include "VertexBuffer.h"
 #include "Program.h"
 
 namespace cbx { 
 
-    struct WindowOptions { 
+    struct WindowOptions 
+    { 
         std::string name;
         unsigned int width;
         unsigned int height;
@@ -25,7 +27,8 @@ namespace cbx {
 
     };
 
-    class Window { 
+    class Window 
+    { 
         public: 
             Window(WindowOptions opt = WindowOptions());
             ~Window();
@@ -40,6 +43,7 @@ namespace cbx {
             bool m_Running = true;
             WindowOptions m_Options;
             std::unique_ptr<VertexArray> vao = nullptr;
+            std::unique_ptr<VertexBuffer> ebo = nullptr;
             std::unique_ptr<Program> program = nullptr;
     };
 

@@ -14,6 +14,7 @@ set(SOURCES
     src/Program.cpp
     src/VertexArray.cpp
     src/VertexBuffer.cpp
+    src/ResourceManager.cpp
 )
 
 set(GLAD_DIR vendor/glad)

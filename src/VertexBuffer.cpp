@@ -1,11 +1,15 @@
 #include "VertexBuffer.h"
-#include <GL/glew.h>
+#include <exception>
 
-cbx::VertexBuffer::VertexBuffer(int size, const float* data) 
+cbx::VertexBuffer::VertexBuffer(int size, const void* data, GLenum usage) 
+    : m_Usage(usage)
 { 
+    if (usage != GL_ARRAY_BUFFER && usage != GL_ELEMENT_ARRAY_BUFFER) 
+        throw std::exception();
+
     glGenBuffers(1, &m_RendererId);
     Bind();
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+    glBufferData(m_Usage, size, data, GL_STATIC_DRAW);
 }
 
 cbx::VertexBuffer::~VertexBuffer() 
@@ -15,11 +19,11 @@ cbx::VertexBuffer::~VertexBuffer()
 
 void cbx::VertexBuffer::Bind() const
 { 
-    glBindBuffer(GL_ARRAY_BUFFER, m_RendererId);
+    glBindBuffer(m_Usage, m_RendererId);
 }
 
 void cbx::VertexBuffer::Unbind() const  
 { 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(m_Usage, 0);
 }
 

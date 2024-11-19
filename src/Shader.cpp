@@ -4,6 +4,7 @@
 
 cbx::Shader::Shader(const char* source, cbx::Shader::Type type)
 {
+    std::cout << "SHADER SOURCE:\n" << source << std::endl;
     switch (type) { 
         case VERTEX: 
             m_RendererId = glCreateShader(GL_VERTEX_SHADER);

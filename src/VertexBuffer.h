@@ -1,12 +1,13 @@
 #pragma once
 #include "RenderObject.h"
+#include <GL/glew.h>
 
 namespace cbx { 
 
     class VertexBuffer : public RenderObject 
     { 
         public: 
-            VertexBuffer(int size, const float* data); 
+            VertexBuffer(int size, const void* data, GLenum usage); 
             ~VertexBuffer(); 
 
             void Bind() const override;
@@ -18,5 +19,6 @@ namespace cbx {
 
         private: 
             unsigned int m_RendererId;
+            unsigned int m_Usage;
     };
 }
