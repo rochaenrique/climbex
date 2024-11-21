@@ -38,6 +38,21 @@ void cbx::Program::Bind() const
 
 void cbx::Program::Unbind() const 
 {
-
+    glUseProgram(0);
 };
 
+
+void cbx::Program::SetUniform4f(const std::string& name, float v1, float v2, float v3, float v4)
+{
+    glUniform4f(GetUniformLocation(name), v1, v2, v3, v4);
+};
+
+int cbx::Program::GetUniformLocation(const std::string& name) 
+{ 
+    if (m_UniformCache.contains(name)) 
+        return m_UniformCache[name];
+
+    int location = glGetUniformLocation(m_RendererId, name.c_str());
+    m_UniformCache[name] = location;
+    return location;
+};
