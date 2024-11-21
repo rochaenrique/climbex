@@ -12,9 +12,7 @@ const std::string cbx::ResourceManager::FromFile(const std::string& filePath) co
     std::fstream file((resPath / filePath).string());
 
     if (!file) 
-    { 
         std::cout << "ERRROR WHILE LOADING RESOURCE: " << filePath << std::endl;
-    }
 
     std::string line;
     std::stringstream ss;

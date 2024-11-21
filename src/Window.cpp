@@ -48,17 +48,17 @@ void cbx::Window::Init()
 void cbx::Window::Run()
 {
     float vertices1[] = {
-         0.0f,  0.5f, 0.0f,  // top right
-         0.0f, -0.5f, 0.0f,  // bottom right
-        -1.0f, -0.5f, 0.0f,  // bottom left
-        -1.0f,  0.5f, 0.0f,  // top left 
+        -0.5f,  0.5f, 0.0f, 
+         0.0f,  0.5f, 0.0f, 
+         0.0f,  0.0f, 0.0f,  
+        -0.5f,  0.0f, 0.0f,  
     };
 
     float vertices2[] = {
-         0.5f,  0.5f, 0.0f,  // top right
-         0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f,  // top left 
+         // postitions       // colors
+         0.25f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top
+         0.75f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom right
+        -0.25f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f  // bottom left
     };
 
     unsigned int indices[] = {
@@ -67,7 +67,7 @@ void cbx::Window::Run()
     }; 
 
     ResourceManager rm;
-    Shader vertexShader(rm.FromFile("Vertex.Shader").c_str(), Shader::Type::VERTEX);
+    Shader vertexShader(rm.FromFile("Vertex1.Shader").c_str(), Shader::Type::VERTEX);
     Shader fragmentShader1(rm.FromFile("Fragment1.Shader").c_str(), Shader::Type::FRAGMENT);
 
     auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
@@ -78,23 +78,24 @@ void cbx::Window::Run()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    Shader vertexShader1(rm.FromFile("Vertex2.Shader").c_str(), Shader::Type::VERTEX);
     Shader fragmentShader2(rm.FromFile("Fragment2.Shader").c_str(), Shader::Type::FRAGMENT);
-    auto program2 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader2}));
+    auto program2 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader1, fragmentShader2}));
 
     auto vao2 = std::make_unique<VertexArray>();
-    auto ebo2 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
     VertexBuffer vbo2(sizeof(vertices2), vertices2, GL_ARRAY_BUFFER);
     vao2->BindBuffer(vbo2);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    objs = std::array<std::unique_ptr<RenderObject>, 6> { 
+    m_Objs = std::array<std::unique_ptr<RenderObject>, 5> { 
         std::move(program1), 
         std::move(vao1), 
         std::move(ebo1), 
         std::move(program2), 
-        std::move(vao2), 
-        std::move(ebo2) 
+        std::move(vao2) 
     };
 
 
@@ -106,17 +107,22 @@ void cbx::Window::Run()
 
 void cbx::Window::OnUpdate()
 {
-    glClearColor(0.2f, 0.3f, 0.4f, 0.5f);
+    float time = glfwGetTime();
+    float value = (sin(time) / 2.0f) + 0.5f;
+
+    glClearColor(cos(2 * time) / 2.0f + 0.1f, 0.3f, 0.4f, 0.5f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    objs[0]->Bind();
-    objs[1]->Bind();
-    objs[2]->Bind();
+    m_Objs[0]->Bind();
+    int colorLocation = glGetUniformLocation(m_Objs[0]->GetRendererID(), "ourColor");
+    glUniform4f(colorLocation, 0.0f, value, 0.0f, 1.0f);
+    m_Objs[1]->Bind();
+    m_Objs[2]->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    objs[3]->Bind();
-    objs[4]->Bind();
-    objs[5]->Bind();
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    m_Objs[3]->Bind();
+    m_Objs[4]->Bind();
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();

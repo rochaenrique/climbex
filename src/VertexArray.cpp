@@ -25,7 +25,16 @@ void cbx::VertexArray::BindBuffer(const VertexBuffer& vb) const
 {
     Bind();
     vb.Bind();
-
     //attribute stuff
 }
 
+template<typename T>
+void cbx::VertexArray::SetAttribute(const std::string& name, T value) const
+{
+    throw std::exception();
+}
+
+template<>
+void cbx::VertexArray::SetAttribute<float>(const std::string& name, float value) const
+{
+}

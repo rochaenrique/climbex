@@ -5,7 +5,6 @@
 #include <array>
 
 #include "RenderObject.h"
-#include "Program.h"
 
 namespace cbx { 
 
@@ -22,7 +21,7 @@ namespace cbx {
         {} 
 
         WindowOptions() 
-            : name("Climbex!!"), width(640), height(480)
+            : name("Climbex!!"), width(400), height(400)
         {}
 
     };
@@ -42,7 +41,7 @@ namespace cbx {
             GLFWwindow* m_Window = nullptr;
             bool m_Running = true;
             WindowOptions m_Options;
-            std::array<std::unique_ptr<RenderObject>, 6> objs{};
+            std::array<std::unique_ptr<RenderObject>, 5> m_Objs{};
     };
 
 }
