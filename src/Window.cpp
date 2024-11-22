@@ -74,9 +74,8 @@ void cbx::Window::Run()
     auto vao1 = std::make_unique<VertexArray>();
     auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
     VertexBuffer vbo1(sizeof(vertices1), vertices1, GL_ARRAY_BUFFER);
+    vao1->SetAttribute<float>(3, false);
     vao1->BindBuffer(vbo1);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 
     Shader vertexShader1(rm.FromFile("Vertex2.Shader").c_str(), Shader::Type::VERTEX);
     Shader fragmentShader2(rm.FromFile("Fragment2.Shader").c_str(), Shader::Type::FRAGMENT);
@@ -84,11 +83,9 @@ void cbx::Window::Run()
 
     auto vao2 = std::make_unique<VertexArray>();
     VertexBuffer vbo2(sizeof(vertices2), vertices2, GL_ARRAY_BUFFER);
+    vao2->SetAttribute<float>(3, false);
+    vao2->SetAttribute<float>(3, false);
     vao2->BindBuffer(vbo2);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 
     m_Objs = std::array<std::unique_ptr<RenderObject>, 5> { 
         std::move(program1), 
