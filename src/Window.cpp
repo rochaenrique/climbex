@@ -48,11 +48,16 @@ void cbx::Window::Init()
 void cbx::Window::Run()
 {
     float vertices1[] = {
-        -0.5f,  0.5f, 0.0f, 
-         0.0f,  0.5f, 0.0f, 
-         0.0f,  0.0f, 0.0f,  
-        -0.5f,  0.0f, 0.0f,  
+        -1.0f,   1.0f, 0.0f, // top right
+         1.0f,   1.0f, 0.0f, // top left
+         1.0f,  -1.0f, 0.0f, // bottom right 
+        -1.0f,  -1.0f, 0.0f, // bottom left 
     };
+
+    unsigned int indices[] = {
+        0, 1, 2,   // first triangle
+        0, 2, 3,   // second triangle
+    }; 
 
     float vertices2[] = {
          // postitions       // colors
@@ -60,11 +65,6 @@ void cbx::Window::Run()
          0.75f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom right
         -0.25f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f  // bottom left
     };
-
-    unsigned int indices[] = {
-        0, 1, 3,   // first triangle
-        1, 2, 3,   // second triangle
-    }; 
 
     ResourceManager rm;
     Shader vertexShader(rm.FromFile("Vertex1.Shader").c_str(), Shader::Type::VERTEX);
@@ -111,15 +111,15 @@ void cbx::Window::OnUpdate()
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_Objs[0]->Bind();
-    int colorLocation = glGetUniformLocation(m_Objs[0]->GetRendererID(), "ourColor");
-    glUniform4f(colorLocation, 0.0f, value, 0.0f, 1.0f);
     m_Objs[1]->Bind();
     m_Objs[2]->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    m_Objs[3]->Bind();
-    m_Objs[4]->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    //m_Objs[3]->Bind();
+    //int offsetLocation = glGetUniformLocation(m_Objs[3]->GetRendererID(), "offset");
+    //glUniform1f(offsetLocation, sin(time / 4));
+    //m_Objs[4]->Bind();
+    //glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();

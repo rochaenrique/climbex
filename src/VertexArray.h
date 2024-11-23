@@ -33,9 +33,6 @@ namespace cbx {
             template<typename T>
             void SetAttribute(int count, bool normalized);
 
-            // GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer offset
-            // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
         private: 
             unsigned int m_RendererId;
             std::vector<Attribute> m_Attributes;

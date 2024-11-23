@@ -21,7 +21,7 @@ namespace cbx {
         {} 
 
         WindowOptions() 
-            : name("Climbex!!"), width(400), height(400)
+            : name("Climbex!!"), width(800), height(800)
         {}
 
     };

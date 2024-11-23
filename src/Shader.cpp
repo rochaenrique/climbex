@@ -24,7 +24,7 @@ cbx::Shader::Shader(const char* source, cbx::Shader::Type type)
     glGetShaderiv(m_RendererId, GL_COMPILE_STATUS, &success);
     if (!success) { 
         glGetShaderInfoLog(m_RendererId, 512, NULL, infoLog);
-        std::cout << "ERROR WHILE COMPILING SHADER: " << infoLog << std::endl;;
+        std::cout << "ERROR WHILE COMPILING " << (type == Shader::Type::VERTEX ? "VERTEX" : "FRAGMENT") <<" SHADER: " << infoLog << std::endl;;
     }
 }
 
