@@ -68,7 +68,7 @@ void cbx::Window::Run()
 
     ResourceManager rm;
     Shader vertexShader(rm.FromFile("Vertex1.Shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader1(rm.FromFile("Fragment1.Shader").c_str(), Shader::Type::FRAGMENT);
+    Shader fragmentShader1(rm.FromFile("Fractal.Shader").c_str(), Shader::Type::FRAGMENT);
 
     auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
     auto vao1 = std::make_unique<VertexArray>();
@@ -77,22 +77,10 @@ void cbx::Window::Run()
     vao1->SetAttribute<float>(3, false);
     vao1->BindBuffer(vbo1);
 
-    Shader vertexShader1(rm.FromFile("Vertex2.Shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader2(rm.FromFile("Fragment2.Shader").c_str(), Shader::Type::FRAGMENT);
-    auto program2 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader1, fragmentShader2}));
-
-    auto vao2 = std::make_unique<VertexArray>();
-    VertexBuffer vbo2(sizeof(vertices2), vertices2, GL_ARRAY_BUFFER);
-    vao2->SetAttribute<float>(3, false);
-    vao2->SetAttribute<float>(3, false);
-    vao2->BindBuffer(vbo2);
-
-    m_Objs = std::array<std::unique_ptr<RenderObject>, 5> { 
+    m_Objs = std::array<std::unique_ptr<RenderObject>, 3> { 
         std::move(program1), 
         std::move(vao1), 
         std::move(ebo1), 
-        std::move(program2), 
-        std::move(vao2) 
     };
 
 
@@ -114,12 +102,6 @@ void cbx::Window::OnUpdate()
     m_Objs[1]->Bind();
     m_Objs[2]->Bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    //m_Objs[3]->Bind();
-    //int offsetLocation = glGetUniformLocation(m_Objs[3]->GetRendererID(), "offset");
-    //glUniform1f(offsetLocation, sin(time / 4));
-    //m_Objs[4]->Bind();
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
