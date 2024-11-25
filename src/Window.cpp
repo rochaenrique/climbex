@@ -40,13 +40,47 @@ void cbx::Window::Init()
 
     if (GLenum err = glewInit() != GLEW_OK) { 
         std::cout << "Error while initializing glew: " << glewGetErrorString(err) << std::endl;
+        return;
     }
-    
-    m_Running = true;
+
+    glfwSetWindowUserPointer(m_Window, this);
+
+    //window close event
+    glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { 
+            std::cout << "WINDOW CLOSE EVENT\n";
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            usrWindow->m_Running = false;
+            });
+
+    glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) { 
+            std::cout << "WINDOW SIZE EVENT: " << width << "x" << height << std::endl;
+            });
+
+    //key events
+    glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) { 
+            std::cout << "KEY EVENT: " << glfwGetKeyName(key, scancode) << ", " <<  key << ", " << scancode << std::endl;
+            });
+
+    //mouse move events
+    glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) { 
+            std::cout << "MOUSE MOVE EVENT: " << xpos << "x" << ypos << std::endl;
+            });
+
+    //mouse button events
+    glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) { 
+            std::cout << "MOUSE BUTTON EVENT: " << button << ", " << action << ", " << mods << std::endl;
+            });
+
+    //mouse scroll events
+    glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset) { 
+            std::cout << "MOUSE SCROLL EVENT: " << xoffset << "x" << yoffset << std::endl;
+            });
 };
 
 void cbx::Window::Run()
 {
+    m_Running = true;
+
     float vertices1[] = {
         -1.0f,   1.0f, 0.0f, // top right
          1.0f,   1.0f, 0.0f, // top left
