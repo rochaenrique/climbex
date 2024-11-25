@@ -15,6 +15,9 @@ set(SOURCES
     src/VertexArray.cpp
     src/VertexBuffer.cpp
     src/ResourceManager.cpp
+    src/events/Event.h
+    src/events/Dispatch.h
+    src/events/KeyEvents.h
 )
 
 set(GLAD_DIR vendor/glad)

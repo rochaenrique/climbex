@@ -22,3 +22,8 @@ namespace cbx {
     };
 
 }
+
+static inline  std::ostream& operator<<(std::ostream& os, const cbx::Event& event) { 
+    os << event.GetString();
+    return os;
+}

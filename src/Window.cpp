@@ -4,11 +4,16 @@
 #include "Program.h"
 #include "ResourceManager.h"
 #include "Shader.h"
+#include "events/Dispatch.h"
+#include "events/KeyEvents.h"
 #include <iostream>
 
 cbx::Window::Window(WindowOptions opt)
     : m_Options(opt)
 {
+    EventCallback = [this](const Event& e) { 
+        OnEvent(e);
+    };
 };
 
 cbx::Window::~Window()
@@ -58,7 +63,20 @@ void cbx::Window::Init()
 
     //key events
     glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) { 
-            std::cout << "KEY EVENT: " << glfwGetKeyName(key, scancode) << ", " <<  key << ", " << scancode << std::endl;
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            switch (action) 
+            { 
+                case GLFW_PRESS:
+                    usrWindow->EventCallback(KeyPressEvent(key, scancode));
+                    break;
+                case GLFW_RELEASE:
+                    usrWindow->EventCallback(KeyReleaseEvent(key, scancode));
+                    break;
+                default: 
+                    std::cout << "Key Event is neither PRESS or RELEASE!\n";
+                    break;
+            }
+
             });
 
     //mouse move events
@@ -139,4 +157,9 @@ void cbx::Window::OnUpdate()
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();
+};
+
+void cbx::Window::OnEvent(const Event& e)
+{
+    std::cout << e << std::endl;
 };

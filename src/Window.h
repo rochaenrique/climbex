@@ -3,8 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <array>
+#include <functional>
 
 #include "RenderObject.h"
+#include "events/Event.h"
 
 namespace cbx { 
 
@@ -37,11 +39,15 @@ namespace cbx {
 
         private: 
             void OnUpdate();
+            void OnEvent(const Event& e);
 
             GLFWwindow* m_Window = nullptr;
             bool m_Running = true;
             WindowOptions m_Options;
             std::array<std::unique_ptr<RenderObject>, 3> m_Objs{};
+
+            using EventCallbackFN = std::function<void(const Event& e)>;
+            EventCallbackFN EventCallback;
     };
 
 }
