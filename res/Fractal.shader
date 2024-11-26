@@ -8,7 +8,7 @@ vec2 iSqr(vec2 z) {
 }
 
 vec3 colorFunc(int iter) { 
-    vec3 color = vec3(0.2 + 0.012 * iter, 1.0, 0.2 + 0.4 * (1.0 + sin(0.3 * iter)));
+    vec3 color = vec3(0.4 + 0.012 * iter, 1.0, 0.2 + 0.4 * (1.0 + sin(0.3 * iter)));
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 m = abs(fract(color.xxx + K.xyz) * 6.0 - K.www);
     return vec3(color.z * mix(K.xxx, clamp(m - K.xxx, 0.0, 1.0), color.y));
@@ -23,7 +23,7 @@ void main()
     int i; 
     vec3 color = vec3(0.0, 0.0, 0.0);
     vec2 res;
-    for (int i = 0; i < 1000; i++) { 
+    for (int i = 0; i < 10; i++) { 
         res = iSqr(z) + c;
         if (length(res) > 4.0) {
             color = colorFunc(i);

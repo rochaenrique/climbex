@@ -10,11 +10,11 @@ project(Climbex VERSION 0.1)
 set(SOURCES
     src/main.cpp
     src/Window.cpp
-    src/Shader.cpp
-    src/Program.cpp
-    src/VertexArray.cpp
-    src/VertexBuffer.cpp
     src/ResourceManager.cpp
+    src/renderer/Shader.cpp
+    src/renderer/Program.cpp
+    src/renderer/VertexArray.cpp
+    src/renderer/VertexBuffer.cpp
     src/events/Event.h
     src/events/KeyEvents.h
 )

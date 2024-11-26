@@ -5,7 +5,7 @@
 #include <array>
 #include <functional>
 
-#include "RenderObject.h"
+#include "renderer/RenderObject.h"
 #include "events/Event.h"
 
 namespace cbx { 

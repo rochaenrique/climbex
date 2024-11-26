@@ -1,12 +1,15 @@
 #include "Window.h"
-#include "VertexBuffer.h"
-#include "VertexArray.h"
-#include "Program.h"
 #include "ResourceManager.h"
-#include "Shader.h"
+
+#include "renderer/VertexBuffer.h"
+#include "renderer/VertexArray.h"
+#include "renderer/Program.h"
+#include "renderer/Shader.h"
+
 #include "events/MouseEvents.h"
 #include "events/KeyEvents.h"
 #include "events/WindowEvents.h"
+
 #include <iostream>
 
 cbx::Window::Window(WindowOptions opt)
