@@ -4,16 +4,15 @@
 #include "Program.h"
 #include "ResourceManager.h"
 #include "Shader.h"
-#include "events/Dispatch.h"
+#include "events/MouseEvents.h"
 #include "events/KeyEvents.h"
+#include "events/WindowEvents.h"
 #include <iostream>
 
 cbx::Window::Window(WindowOptions opt)
     : m_Options(opt)
 {
-    EventCallback = [this](const Event& e) { 
-        OnEvent(e);
-    };
+    EventCallback = [this](const Event& e) { OnEvent(e); };
 };
 
 cbx::Window::~Window()
@@ -52,13 +51,14 @@ void cbx::Window::Init()
 
     //window close event
     glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { 
-            std::cout << "WINDOW CLOSE EVENT\n";
             Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
             usrWindow->m_Running = false;
             });
 
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) { 
-            std::cout << "WINDOW SIZE EVENT: " << width << "x" << height << std::endl;
+            //std::cout << "WINDOW SIZE EVENT: " << width << "x" << height << std::endl;
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            usrWindow->EventCallback(WindowResizeEvent(width, height));
             });
 
     //key events
@@ -76,22 +76,37 @@ void cbx::Window::Init()
                     std::cout << "Key Event is neither PRESS or RELEASE!\n";
                     break;
             }
-
             });
 
     //mouse move events
     glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) { 
-            std::cout << "MOUSE MOVE EVENT: " << xpos << "x" << ypos << std::endl;
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            usrWindow->EventCallback(MouseMoveEvent(xpos, ypos));
             });
 
     //mouse button events
     glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) { 
-            std::cout << "MOUSE BUTTON EVENT: " << button << ", " << action << ", " << mods << std::endl;
+            //std::cout << "MOUSE BUTTON EVENT: " << button << ", " << action << ", " << mods << std::endl;
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            switch (action) 
+            { 
+                case GLFW_PRESS:
+                    usrWindow->EventCallback(MouseButtonPressEvent(button));
+                    break;
+                case GLFW_RELEASE:
+                    usrWindow->EventCallback(MouseButtonReleaseEvent(button));
+                    break;
+                default: 
+                    std::cout << "Key Event is neither PRESS or RELEASE!\n";
+                    break;
+            }
             });
 
     //mouse scroll events
     glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset) { 
-            std::cout << "MOUSE SCROLL EVENT: " << xoffset << "x" << yoffset << std::endl;
+            //std::cout << "MOUSE SCROLL EVENT: " << xoffset << "x" << yoffset << std::endl;
+            Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
+            usrWindow->EventCallback(MouseScrollEvent(xoffset, yoffset));
             });
 };
 
@@ -161,5 +176,9 @@ void cbx::Window::OnUpdate()
 
 void cbx::Window::OnEvent(const Event& e)
 {
-    std::cout << e << std::endl;
+    Event::Dispatch<KeyPressEvent>(e, [](const KeyPressEvent& e) -> bool { 
+            return false;
+            });
 };
+
+
