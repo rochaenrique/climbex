@@ -31,7 +31,7 @@ namespace cbx {
             };
 
             template<typename T>
-            void SetAttribute(int count, bool normalized);
+            void SetAttribute(int count, bool normalized = false);
 
         private: 
             unsigned int m_RendererId;

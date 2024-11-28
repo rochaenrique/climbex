@@ -44,7 +44,7 @@ namespace cbx {
             GLFWwindow* m_Window = nullptr;
             bool m_Running = true;
             WindowOptions m_Options;
-            std::array<std::unique_ptr<RenderObject>, 3> m_Objs{};
+            std::array<std::unique_ptr<RenderObject>, 4> m_Objs{};
 
             using EventCallbackFN = std::function<void(const Event& e)>;
             EventCallbackFN EventCallback;

@@ -1,7 +1,8 @@
 #pragma once
 
-namespace cbx { 
+#define GET_RENDERER_ID inline unsigned int GetRendererID() const { return m_RendererId; };
 
+namespace cbx { 
     class RenderObject 
     { 
         public:

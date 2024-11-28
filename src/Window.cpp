@@ -5,6 +5,7 @@
 #include "renderer/VertexArray.h"
 #include "renderer/Program.h"
 #include "renderer/Shader.h"
+#include "renderer/Texture.h"
 
 #include "events/MouseEvents.h"
 #include "events/KeyEvents.h"
@@ -117,40 +118,38 @@ void cbx::Window::Run()
 {
     m_Running = true;
 
-    float vertices1[] = {
-        -1.0f,   1.0f, 0.0f, // top right
-         1.0f,   1.0f, 0.0f, // top left
-         1.0f,  -1.0f, 0.0f, // bottom right 
-        -1.0f,  -1.0f, 0.0f, // bottom left 
+    float vertices[] = {
+        // positions      textures coordinates
+        -1.0f,  1.0f,     0.0f, 1.0f, // top left
+         1.0f,  1.0f,     1.0f, 1.0f, // top right
+         1.0f, -1.0f,     1.0f, 0.0f, // bottom right 
+        -1.0f, -1.0f,     0.0f, 0.0f  // bottom left
     };
 
     unsigned int indices[] = {
-        0, 1, 2,   // first triangle
-        0, 2, 3,   // second triangle
+        0, 1, 2, // first triangle
+        0, 2, 3  // second triangle
     }; 
 
-    float vertices2[] = {
-         // postitions       // colors
-         0.25f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top
-         0.75f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom right
-        -0.25f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f  // bottom left
-    };
-
     ResourceManager rm;
-    Shader vertexShader(rm.FromFile("Vertex1.Shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader1(rm.FromFile("Fractal.Shader").c_str(), Shader::Type::FRAGMENT);
+    Shader vertexShader(rm.FromFile("Vertex1.shader").c_str(), Shader::Type::VERTEX);
+    Shader fragmentShader1(rm.FromFile("Fractal.shader").c_str(), Shader::Type::FRAGMENT);
 
     auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
     auto vao1 = std::make_unique<VertexArray>();
     auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
-    VertexBuffer vbo1(sizeof(vertices1), vertices1, GL_ARRAY_BUFFER);
-    vao1->SetAttribute<float>(3, false);
-    vao1->BindBuffer(vbo1);
+    auto tex = std::make_unique<Texture>("../res/spongebob.png");
 
-    m_Objs = std::array<std::unique_ptr<RenderObject>, 3> { 
+    vao1->SetAttribute<float>(2);
+    vao1->SetAttribute<float>(2);
+    VertexBuffer vbo(sizeof(vertices), vertices, GL_ARRAY_BUFFER);
+    vao1->BindBuffer(vbo);
+
+    m_Objs = std::array<std::unique_ptr<RenderObject>, 4> { 
         std::move(program1), 
         std::move(vao1), 
         std::move(ebo1), 
+        std::move(tex), 
     };
 
 
@@ -162,16 +161,18 @@ void cbx::Window::Run()
 
 void cbx::Window::OnUpdate()
 {
-    float time = glfwGetTime();
-    float value = (sin(time) / 2.0f) + 0.5f;
-
-    glClearColor(cos(2 * time) / 2.0f + 0.1f, 0.3f, 0.4f, 0.5f);
+    glClearColor(cos(2 * glfwGetTime()) / 2.0f + 0.1f, 0.3f, 0.4f, 0.5f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     m_Objs[0]->Bind();
     m_Objs[1]->Bind();
     m_Objs[2]->Bind();
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    m_Objs[0]->Unbind();
+    m_Objs[1]->Unbind();
+    m_Objs[2]->Unbind();
 
     glfwSwapBuffers(m_Window);
     glfwPollEvents();

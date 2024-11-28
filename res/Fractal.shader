@@ -1,7 +1,11 @@
 #version 330 core
 
-in vec2 pass_Position;
 out vec4 o_Color;
+
+in vec2 o_Position;
+in vec2 o_TextureCoord;
+
+uniform sampler2D u_Texture;
 
 vec2 iSqr(vec2 z) { 
     return vec2((z.x * z.x) - (z.y * z.y), 2 * z.x * z.y);
@@ -17,13 +21,13 @@ vec3 colorFunc(int iter) {
 void main() 
 {
     vec2 c, z;
-    c = vec2(pass_Position.x - 0.5, pass_Position.y);
+    c = vec2(o_Position.x - 0.5, o_Position.y);
     z = c;
 
     int i; 
     vec3 color = vec3(0.0, 0.0, 0.0);
     vec2 res;
-    for (int i = 0; i < 10; i++) { 
+    for (int i = 0; i < 100; i++) { 
         res = iSqr(z) + c;
         if (length(res) > 4.0) {
             color = colorFunc(i);
@@ -32,5 +36,5 @@ void main()
         z = res;
     }
 
-    o_Color = vec4(color, 1.0);
+    o_Color = texture(u_Texture, o_TextureCoord) * vec4(color, 1.0);
 }

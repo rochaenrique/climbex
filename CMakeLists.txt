@@ -15,11 +15,8 @@ set(SOURCES
     src/renderer/Program.cpp
     src/renderer/VertexArray.cpp
     src/renderer/VertexBuffer.cpp
-    src/events/Event.h
-    src/events/KeyEvents.h
+    src/renderer/Texture.cpp
 )
-
-set(GLAD_DIR vendor/glad)
 
 add_executable(Climbex ${SOURCES})
 
@@ -31,6 +28,6 @@ target_link_libraries(Climbex PUBLIC glfw GLEW::GLEW OpenGL::GL)
 
 target_include_directories(Climbex PUBLIC 
     "${PROJECT_BINARY_DIR}"
-    "${GLAD_DIR}/include"
+    "vendor"
 )
 
