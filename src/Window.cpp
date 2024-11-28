@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "ResourceManager.h"
+#include "Log.h"
 
 #include "renderer/VertexBuffer.h"
 #include "renderer/VertexArray.h"
@@ -52,6 +53,21 @@ void cbx::Window::Init()
     }
 
     glfwSetWindowUserPointer(m_Window, this);
+
+#ifdef CBX_DEBUG
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback([](GLenum source, 
+                GLenum type, 
+                GLuint id, 
+                GLenum severity, 
+                GLsizei length, 
+                const GLchar* message, 
+                const void* userParam) { 
+
+            Log::Send(message);
+
+            }, 0);
+#endif
 
     //window close event
     glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { 

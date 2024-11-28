@@ -1,12 +1,12 @@
 #include "Window.h"
-#include <iostream>
+#include "Log.h"
 
 int main() 
 { 
-    std::cout << "Hello Climbex!\n";
+    cbx::Log::Init("");
+    cbx::Log::Send("Hello Climbex!");
 
     cbx::Window window;
     window.Init();
     window.Run();
-
 }

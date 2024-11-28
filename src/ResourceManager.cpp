@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <format>
 #include <GL/glew.h>
 
 #define STB_IMAGE_IMPLEMENTATION

@@ -10,6 +10,7 @@ project(Climbex VERSION 0.1)
 set(SOURCES
     src/main.cpp
     src/Window.cpp
+    src/Log.cpp
     src/ResourceManager.cpp
     src/renderer/Shader.cpp
     src/renderer/Program.cpp

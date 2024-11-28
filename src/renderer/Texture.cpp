@@ -2,7 +2,7 @@
 #include <iostream>
 #include <GL/glew.h>
 
-cbx::Texture::Texture(const Image img, unsigned int location)
+cbx::Texture::Texture(const Image& img, unsigned int location)
     : m_Location(location)
 {
     glGenTextures(1, &m_RendererId);

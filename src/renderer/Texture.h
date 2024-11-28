@@ -7,7 +7,7 @@ namespace cbx {
     class Texture : public RenderObject
     {
         public:
-            Texture(const Image img, unsigned int location = 0);
+            Texture(const Image& img, unsigned int location = 0);
             void Bind() const;
             void Unbind() const;
 
