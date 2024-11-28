@@ -29,5 +29,6 @@ target_link_libraries(Climbex PUBLIC glfw GLEW::GLEW OpenGL::GL)
 target_include_directories(Climbex PUBLIC 
     "${PROJECT_BINARY_DIR}"
     "vendor"
+    "src"
 )
 

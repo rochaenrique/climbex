@@ -131,14 +131,14 @@ void cbx::Window::Run()
         0, 2, 3  // second triangle
     }; 
 
-    ResourceManager rm;
-    Shader vertexShader(rm.FromFile("Vertex1.shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader1(rm.FromFile("Fractal.shader").c_str(), Shader::Type::FRAGMENT);
+    ResourceManager rm("/Users/enrique/dev/climbex/res");
+    Shader vertexShader(rm.ReadFile("Vertex1.shader").c_str(), Shader::Type::VERTEX);
+    Shader fragmentShader1(rm.ReadFile("Fractal.shader").c_str(), Shader::Type::FRAGMENT);
 
     auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
     auto vao1 = std::make_unique<VertexArray>();
     auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
-    auto tex = std::make_unique<Texture>("../res/spongebob.png");
+    auto tex = std::make_unique<Texture>(rm.ReadImage("spongebob.png"));
 
     vao1->SetAttribute<float>(2);
     vao1->SetAttribute<float>(2);

@@ -1,14 +1,13 @@
 #pragma once
 
 #include "RenderObject.h"
-
-#include <string>
+#include "../ResourceManager.h"
 
 namespace cbx { 
     class Texture : public RenderObject
     {
         public:
-            Texture(const std::string& path, unsigned int location = 0);
+            Texture(const Image img, unsigned int location = 0);
             void Bind() const;
             void Unbind() const;
 

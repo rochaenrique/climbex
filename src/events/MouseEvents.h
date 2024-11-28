@@ -31,6 +31,7 @@ namespace cbx {
         public: 
             MouseButtonPressEvent(int button) 
                 : m_Button(button) 
+
             {};
 
             inline const std::string GetString() const override 
