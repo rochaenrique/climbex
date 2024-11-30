@@ -1,6 +1,6 @@
 #include "Window.h"
-#include "ResourceManager.h"
 #include "Log.h"
+#include "ResourceManager.h"
 
 #include "renderer/VertexBuffer.h"
 #include "renderer/VertexArray.h"
@@ -11,6 +11,8 @@
 #include "events/MouseEvents.h"
 #include "events/KeyEvents.h"
 #include "events/WindowEvents.h"
+
+#include "math/vec.h"
 
 #include <iostream>
 
@@ -63,11 +65,12 @@ void cbx::Window::Init()
                 GLsizei length, 
                 const GLchar* message, 
                 const void* userParam) { 
-
-            Log::Send(message);
-
+            //TODO: Properly format a send message
+            CBX_LOG(message);
             }, 0);
 #endif
+    CBX_LOG(cm::vec(1, 2));
+    CBX_LOG(cm::vec(1.0f, 2.0f, 1.0f, 2.0f));
 
     //window close event
     glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { 
@@ -155,6 +158,8 @@ void cbx::Window::Run()
     auto vao1 = std::make_unique<VertexArray>();
     auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
     auto tex = std::make_unique<Texture>(rm.ReadImage("spongebob.png"));
+
+
 
     vao1->SetAttribute<float>(2);
     vao1->SetAttribute<float>(2);
