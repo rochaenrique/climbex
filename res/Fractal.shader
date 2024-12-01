@@ -5,8 +5,6 @@ out vec4 o_Color;
 in vec2 o_Position;
 in vec2 o_TextureCoord;
 
-uniform sampler2D u_Texture;
-
 vec2 iSqr(vec2 z) { 
     return vec2((z.x * z.x) - (z.y * z.y), 2 * z.x * z.y);
 }
@@ -36,5 +34,5 @@ void main()
         z = res;
     }
 
-    o_Color = texture(u_Texture, o_TextureCoord) * vec4(color, 1.0);
+    o_Color = vec4(color, 1.0);
 }

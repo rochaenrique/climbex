@@ -145,12 +145,12 @@ namespace cm {
                 std::array<T, 4> arr;
             };
     };
+
+    template<typename T, size_t S>
+    static std::ostream& operator<<(std::ostream& os, const vec<T,S> vec) {
+        for (const T& el : vec.arr)
+            os << el << ", ";
+        return os;
+    };
 }
 
-template<typename T, size_t S>
-static std::ostream& operator<<(std::ostream& os, const cm::vec<T,S> vec) 
-{
-    for (const T& el : vec.arr)
-        os << el << ", ";
-    return os;
-};

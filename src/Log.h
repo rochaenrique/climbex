@@ -18,7 +18,11 @@ namespace cbx {
             static Log* Get() { return logger; };
 
             template <typename T>
-            static inline void Send(T&& msg) { std::cout << msg << std::endl; };
+            static inline void Send(T&& msg) 
+            { 
+                if constexpr ( requires { std::cout << msg; })
+                    std::cout << msg << std::endl; 
+            };
 
             template<typename... T>
             static void Send(std::format_string<T...> fmt, T&&... args)

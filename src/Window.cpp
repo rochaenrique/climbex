@@ -1,12 +1,11 @@
 #include "Window.h"
-#include "Log.h"
 #include "ResourceManager.h"
+#include "Log.h"
 
 #include "renderer/VertexBuffer.h"
 #include "renderer/VertexArray.h"
 #include "renderer/Program.h"
 #include "renderer/Shader.h"
-#include "renderer/Texture.h"
 
 #include "events/MouseEvents.h"
 #include "events/KeyEvents.h"
@@ -56,7 +55,7 @@ void cbx::Window::Init()
 
     glfwSetWindowUserPointer(m_Window, this);
 
-#ifdef CBX_DEBUG
+#ifndef CBX_DEBUG
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback([](GLenum source, 
                 GLenum type, 
@@ -66,13 +65,10 @@ void cbx::Window::Init()
                 const GLchar* message, 
                 const void* userParam) { 
             //TODO: Properly format a send message
-            CBX_LOG(message);
+            //CBX_LOG(message);
             }, 0);
 #endif
-    CBX_LOG(cm::vec(1, 2));
-    CBX_LOG(cm::vec(1.0f, 2.0f, 1.0f, 2.0f));
 
-    //window close event
     glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { 
             Window* usrWindow = (Window*)glfwGetWindowUserPointer(window);
             usrWindow->m_Running = false;
@@ -137,40 +133,37 @@ void cbx::Window::Run()
 {
     m_Running = true;
 
-    float vertices[] = {
-        // positions      textures coordinates
-        -1.0f,  1.0f,     0.0f, 1.0f, // top left
-         1.0f,  1.0f,     1.0f, 1.0f, // top right
-         1.0f, -1.0f,     1.0f, 0.0f, // bottom right 
-        -1.0f, -1.0f,     0.0f, 0.0f  // bottom left
+    cm::vec<float, 2> vecs[] = { 
+        { -0.5f,  0.5f },
+        {  0.5f,  0.5f },
+        {  0.5f, -0.5f },
+        { -0.5f, -0.5f }
     };
 
-    unsigned int indices[] = {
-        0, 1, 2, // first triangle
-        0, 2, 3  // second triangle
-    }; 
-
+    cm::vec<unsigned int, 2> inds[] = {
+        { 0, 1 },
+        { 1, 2 },
+        { 2, 3 },
+        { 3, 0 }
+    };
+    
     ResourceManager rm("/Users/enrique/dev/climbex/res");
+
     Shader vertexShader(rm.ReadFile("Vertex1.shader").c_str(), Shader::Type::VERTEX);
-    Shader fragmentShader1(rm.ReadFile("Fractal.shader").c_str(), Shader::Type::FRAGMENT);
+    Shader fragmentShader1(rm.ReadFile("Fragment2.shader").c_str(), Shader::Type::FRAGMENT);
 
     auto program1 = std::make_unique<Program>(std::initializer_list<Shader>({vertexShader, fragmentShader1}));
     auto vao1 = std::make_unique<VertexArray>();
-    auto ebo1 = std::make_unique<VertexBuffer>(sizeof(indices), indices, GL_ELEMENT_ARRAY_BUFFER);
-    auto tex = std::make_unique<Texture>(rm.ReadImage("spongebob.png"));
-
-
+    auto ebo1 = std::make_unique<VertexBuffer>(sizeof(inds), inds, GL_ELEMENT_ARRAY_BUFFER);
 
     vao1->SetAttribute<float>(2);
-    vao1->SetAttribute<float>(2);
-    VertexBuffer vbo(sizeof(vertices), vertices, GL_ARRAY_BUFFER);
+    VertexBuffer vbo(sizeof(vecs), vecs, GL_ARRAY_BUFFER);
     vao1->BindBuffer(vbo);
 
-    m_Objs = std::array<std::unique_ptr<RenderObject>, 4> { 
+    m_Objs = std::array<std::unique_ptr<RenderObject>, 3> { 
         std::move(program1), 
         std::move(vao1), 
-        std::move(ebo1), 
-        std::move(tex), 
+        std::move(ebo1) 
     };
 
 
@@ -189,7 +182,7 @@ void cbx::Window::OnUpdate()
     m_Objs[1]->Bind();
     m_Objs[2]->Bind();
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, 0);
 
     m_Objs[0]->Unbind();
     m_Objs[1]->Unbind();

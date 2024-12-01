@@ -4,7 +4,7 @@
 cbx::VertexBuffer::VertexBuffer(int size, const void* data, GLenum usage) 
     : m_Usage(usage)
 { 
-    if (usage != GL_ARRAY_BUFFER && usage != GL_ELEMENT_ARRAY_BUFFER) 
+    if (!(m_Usage != GL_ARRAY_BUFFER || m_Usage != GL_ELEMENT_ARRAY_BUFFER)) 
         throw std::exception();
 
     glGenBuffers(1, &m_RendererId);
