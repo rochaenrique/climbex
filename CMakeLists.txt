@@ -19,6 +19,9 @@ set(SOURCES
     src/renderer/VertexArray.cpp
     src/renderer/VertexBuffer.cpp
     src/renderer/Texture.cpp
+
+    src/math/matx.h
+    src/math/vec.h
 )
 
 add_executable(Climbex ${SOURCES})
