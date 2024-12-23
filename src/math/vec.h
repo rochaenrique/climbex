@@ -2,42 +2,49 @@
 #include <initializer_list>
 #include <array>
 #include <iostream>
+#include "matx.h"
 
 namespace cm { 
     template <typename T, size_t S>
     class vec
     { 
         public:
-            vec() : arr{} {};
+            vec() : buff{} {};
 
-            vec(const std::array<T, S>& a) : arr{a} {};
+            vec(const std::array<T, S>& a) : buff{a} {};
 
-            vec(std::initializer_list<T> il)
+            vec(std::initializer_list<T>& il)
             {
                 for (int i = 0; i < S; ++i)
-                    arr[i] = il[i];
+                    buff[i] = il[i];
+            };
+
+            vec(T v) 
+            {
+                for (int i = 0; i < S; ++i)  
+                    buff[i] = v;
             };
 
             vec(const vec& a) 
-                : arr{a.arr} {};
+                : buff{a.buff} {};
 
             vec(vec&& a) 
-                : arr{a.arr}
+                : buff{a.buff}
             {
-                a.arr = nullptr;
+                a.buff = nullptr;
             };
 
             vec& operator=(const vec& a)
             {
-                arr = a.arr;
-                a.arr = nullptr;
+                buff = a.buff;
+                a.buff = nullptr;
                 return *this;
             };
 
             vec& operator=(vec&& a)
             {
-                arr = a.arr;
-                a.arr = nullptr;
+                buff = a.buff;
+                a.buff = nullptr;
                 return *this;
             };
 
@@ -73,36 +80,43 @@ namespace cm {
                 return res;
             };
 
-            vec& cross(const vec& a)
+            vec& cross(const vec& a) const
             {
                 int res;
                 for (int i = 0; i < S; ++i)
-                    res += arr[i] * a[i];
+                    res += buff[i] * a[i];
                 return *this;
             };
 
-            int mod()
+            int mod() const
             {
                 int res;
-                for (const T& v : arr)
+                for (const T& v : buff)
                     res += v * v;
                 return std::sqrt(res);
             };
 
-            std::array<T, S> arr;
 
-        private: 
-            T& operator[](size_t i)
-            {
-                static_assert(i >= S, "index out of bounds");
-                return arr[i];
+            friend bool operator==(const vec& a, const vec& b) 
+            { 
+                bool res = true;
+                int i = 0;
+                while (i < S && (res = a.buff[i] == b.buff[i++]));
+                return res;
             };
 
-            const T& operator[](size_t i) const
+            friend bool operator>(const vec& a, const vec& b) 
             {
-                static_assert(i >= S, "index out of bounds");
-                return arr[i];
+                return a.mod() > b.mod();
             };
+
+            template<typename Q, size_t P>
+            operator cm::matx<Q, P, 1>() 
+            { 
+                return { std::array<Q, P>{buff} };
+            };
+
+            std::array<T, S> buff;
     };
 
     template<typename T, typename... Tail>
@@ -116,7 +130,7 @@ namespace cm {
 
             union { 
                 struct { T x, y; };
-                std::array<T, 2> arr;
+                std::array<T, 2> buff;
             };
     };
 
@@ -129,7 +143,7 @@ namespace cm {
             union { 
                 struct { T x, y, z; };
                 struct { T r, g, b; };
-                std::array<T, 3> arr;
+                std::array<T, 3> buff;
             };
     };
 
@@ -142,13 +156,13 @@ namespace cm {
             union { 
                 struct { T x, y, z, w; };
                 struct { T r, g, b, a; };
-                std::array<T, 4> arr;
+                std::array<T, 4> buff;
             };
     };
 
     template<typename T, size_t S>
     static std::ostream& operator<<(std::ostream& os, const vec<T,S> vec) {
-        for (const T& el : vec.arr)
+        for (const T& el : vec.buff)
             os << el << ", ";
         return os;
     };
