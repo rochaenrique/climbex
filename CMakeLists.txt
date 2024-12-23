@@ -5,12 +5,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
+# TODO: Make this mutable
 add_definitions(-DCBX_DEBUG)
 
 project(Climbex VERSION 0.1)
 
 set(SOURCES
-    src/main.cpp
     src/Window.cpp
     src/Log.cpp
     src/ResourceManager.cpp
@@ -20,9 +20,16 @@ set(SOURCES
     src/renderer/VertexBuffer.cpp
     src/renderer/Texture.cpp
 
-    src/math/matx.h
-    src/math/vec.h
+    src/math/matx.hpp
+    src/math/vec.hpp
 )
+
+if (CBX_EXAMPLES)  
+    set(SOURCES 
+        ${SOURCES}
+        examples/main.cpp
+    )
+endif()
 
 add_executable(Climbex ${SOURCES})
 

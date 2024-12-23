@@ -5,10 +5,10 @@ if [ ! -d build ]; then
 fi
 
 cd build
-cmake .. 
+cmake -DCBX_EXAMPLES=True .. 
 
 if ((!$?)); then
-    cmake --build . 
+    cmake --build .  
 else 
     echo "FAILED TO RUN"
 fi
