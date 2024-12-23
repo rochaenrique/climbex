@@ -11,7 +11,7 @@
 #include "events/KeyEvents.h"
 #include "events/WindowEvents.h"
 
-#include "math/vec.h"
+#include "math/vec.hpp"
 
 #include <iostream>
 

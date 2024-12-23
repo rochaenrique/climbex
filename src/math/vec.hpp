@@ -2,7 +2,7 @@
 #include <initializer_list>
 #include <array>
 #include <iostream>
-#include "matx.h"
+#include "matx.hpp"
 
 namespace cm { 
     template <typename T, size_t S>
