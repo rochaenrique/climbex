@@ -14,14 +14,14 @@ namespace cm {
             { 
                 auto arrIt = buff.begin();
                 for (auto it = mat.begin(); it != mat.end(); ++it)
-                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
+                    std::move(it->begin(), it->end(), (arrIt++)->begin());
             }
 
             matx(std::initializer_list<std::initializer_list<T>> il) 
             { 
                 auto arrIt = buff.begin();
                 for (auto it = il.begin(); it != il.end(); ++it)
-                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
+                    std::move(it->begin(), it->end(), (arrIt++)->begin());
             }
 
             matx(T v) 
@@ -62,7 +62,7 @@ namespace cm {
                 return res;
             };
 
-            friend matx operator*(int k, const matx& A)
+            friend matx operator*(T k, const matx& A)
             {
                 matx res;
                 for (int i = 0; i < M; ++i)
@@ -70,21 +70,6 @@ namespace cm {
                         res.buff[i][j] = A.buff[i][j] * k;
                 return res;
             };
-
-            template<size_t P, size_t Q, size_t R>
-            friend matx<T, P, R> operator*(const matx<T, P, Q>& A, const matx<T, Q, R>& B) 
-            { 
-                matx<T, P, R> res;
-                for (int i = 0; i < P; ++i)
-                    for (int j = 0; j < R; ++j)
-                    {
-                        int sum = 0;
-                        for (int z = 0; z < Q; ++z)  
-                            sum += A.buff[i][z] + B.buff[z][i];
-                        res.buff[i][j] = sum;
-                    }
-                return res;
-            }
 
             /*
             template<typename P, size_t Q, size_t R> 
@@ -95,13 +80,13 @@ namespace cm {
             */
 
             //TODO: DEFINE
-            int det() const 
+            T det() const 
             {
             };
 
-            matx<T, N, M> t() const 
+            matx<T,N,M> t() const 
             {
-                matx<T, N, M> res;
+                matx<T,N,M> res;
                 for (int i = 0; i < M; ++i) 
                     for (int j = 0; j < N; ++j) 
                         res.buff[i][j] = buff[j][i];
@@ -151,4 +136,22 @@ namespace cm {
         }
         return os;
     };
+
+    template<typename T, size_t P, size_t Q, size_t R>
+    matx<T,P,R> operator*(const matx<T,P,Q>& A, const matx<T,Q,R>& B) 
+    { 
+        matx<T,P,R> res;
+        T sum = 0; 
+        for (int p = 0; p < P; ++p) { 
+            for (int r = 0; r < R; ++r) 
+            {
+                for (int q = 0; q < Q; ++q) 
+                    sum += A.buff[p][q] * B.buff[q][r];
+                res.buff[p][r] = sum;
+                sum = 0;
+            }
+        }
+
+        return res;
+    }
 }
