@@ -29,10 +29,8 @@ namespace cm {
                 : buff{a.buff} {};
 
             vec(vec&& a) 
-                : buff{a.buff}
-            {
-                a.buff = nullptr;
-            };
+                : buff{std::move(a.buff)}
+            {};
 
             vec& operator=(const vec& a)
             {
@@ -43,8 +41,7 @@ namespace cm {
 
             vec& operator=(vec&& a)
             {
-                buff = a.buff;
-                a.buff = nullptr;
+                buff = std::move(a.buff);
                 return *this;
             };
 

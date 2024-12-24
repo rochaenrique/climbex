@@ -10,40 +10,37 @@ namespace cm {
         public: 
             matx() : buff{} {};
 
-            matx(const std::array<std::array<T, N>, M>& il) 
+            matx(const std::array<std::array<T, N>, M>& mat) 
             { 
-                for (int i = 0; i < M; ++i) 
-                    for (int j = 0; j < N; ++j) 
-                        buff[i][j] = il[i][j];
+                auto arrIt = buff.begin();
+                for (auto it = mat.begin(); it != mat.end(); ++it)
+                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
             }
 
-            matx(const std::initializer_list<std::initializer_list<T>>& il) 
+            matx(std::initializer_list<std::initializer_list<T>> il) 
             { 
-                for (int i = 0; i < M; ++i) 
-                    for (int j = 0; j < N; ++j) 
-                        buff[i][j] = il[i][j];
+                auto arrIt = buff.begin();
+                for (auto it = il.begin(); it != il.end(); ++it)
+                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
             }
 
             matx(T v) 
             { 
-                for (int i = 0; i < M; ++i) 
-                    for (int j = 0; j < N; ++j) 
-                        buff[i][j] = v;
+                for (const auto& row : buff) 
+                    for (const auto& cell : row)
+                        cell = v;
             };
 
             matx(const matx& A) 
                 : buff{A.buff} {};
 
             matx(matx&& A) 
-                : buff{A.buff}
-            {
-                A.buff = nullptr;
-            };
+                : buff{std::move(A.buff)}
+            {};
 
-            matx& operator=(matx&& A)
+            matx operator=(matx&& A)
             {
-                buff = A.buff;
-                A.buff = nullptr;
+                buff = std::move(A.buff);
                 return *this;
             };
 
@@ -52,7 +49,7 @@ namespace cm {
                 matx res;
                 for (int i = 0; i < M; ++i)
                     for (int j = 0; j < N; ++j)
-                        res[i][j] = A[i][j] + B[i][j];
+                        res.buff[i][j] = A.buff[i][j] + B.buff[i][j];
                 return res;
             };
 
@@ -61,16 +58,16 @@ namespace cm {
                 matx res;
                 for (int i = 0; i < M; ++i)
                     for (int j = 0; j < N; ++j)
-                        res[i][j] = A[i][j] - B[i][j];
+                        res.buff[i][j] = A.buff[i][j] - B.buff[i][j];
                 return res;
             };
 
-            friend matx operator*(const matx& A, int k)
+            friend matx operator*(int k, const matx& A)
             {
                 matx res;
                 for (int i = 0; i < M; ++i)
                     for (int j = 0; j < N; ++j)
-                        res[i][j] *= k;
+                        res.buff[i][j] = A.buff[i][j] * k;
                 return res;
             };
 
@@ -84,7 +81,7 @@ namespace cm {
                         int sum = 0;
                         for (int z = 0; z < Q; ++z)  
                             sum += A.buff[i][z] + B.buff[z][i];
-                        res[i][j] = sum;
+                        res.buff[i][j] = sum;
                     }
                 return res;
             }
@@ -131,24 +128,25 @@ namespace cm {
             */
 
             std::array<std::array<T, N>, M> buff;
+
     };
 
     template<typename T, size_t S> 
-    static cm::matx<T,S,S> make_iden() 
-    { 
-        cm::matx<T,S,S> I;
-        for (int i = 0; i < S; ++i) 
-            for (int j = 0; j < S; ++j) 
-                I.buff[i][j] = i == j ? 1 : 0;
-        return I;
-    }
+        static cm::matx<T,S,S> make_iden() 
+        { 
+            cm::matx<T,S,S> I;
+            for (int i = 0; i < S; ++i) 
+                for (int j = 0; j < S; ++j) 
+                    I.buff[i][j] = i == j ? 1 : 0;
+            return I;
+        }
 
     template<typename T, size_t M, size_t N>
     static std::ostream& operator<<(std::ostream& os, const matx<T,M,N> matx) {
         for (const std::array<T, N>& row : matx.buff)
         {
             for (const T& v : row) 
-                os << row << ", ";
+                os << v << ", ";
             os << '\n';
         }
         return os;
