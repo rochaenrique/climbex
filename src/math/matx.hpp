@@ -14,21 +14,27 @@ namespace cm {
             { 
                 auto arrIt = buff.begin();
                 for (auto it = mat.begin(); it != mat.end(); ++it)
+                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
+            }
+
+            matx(const std::array<std::array<T, N>, M>&& mat) 
+            { 
+                auto arrIt = buff.begin();
+                for (auto it = mat.begin(); it != mat.end(); ++it)
                     std::move(it->begin(), it->end(), (arrIt++)->begin());
             }
 
-            matx(std::initializer_list<std::initializer_list<T>> il) 
+            matx(const std::initializer_list<std::initializer_list<T>>& il) 
             { 
                 auto arrIt = buff.begin();
                 for (auto it = il.begin(); it != il.end(); ++it)
-                    std::move(it->begin(), it->end(), (arrIt++)->begin());
+                    std::copy(it->begin(), it->end(), (arrIt++)->begin());
             }
 
             matx(T v) 
             { 
                 for (const auto& row : buff) 
-                    for (const auto& cell : row)
-                        cell = v;
+                    row.fill(v);
             };
 
             matx(const matx& A) 
@@ -41,6 +47,12 @@ namespace cm {
             matx operator=(matx&& A)
             {
                 buff = std::move(A.buff);
+                return *this;
+            };
+
+            matx operator=(const matx& A)
+            {
+                buff = A.buff;
                 return *this;
             };
 
@@ -116,6 +128,18 @@ namespace cm {
 
     };
 
+    template<typename T, size_t P, size_t Q, size_t R>
+    matx<T,P,R> operator*(const matx<T,P,Q>& A, const matx<T,Q,R>& B) 
+    { 
+        matx<T,P,R> res;
+        for (int p = 0; p < P; ++p)  
+            for (int r = 0; r < R; ++r) 
+                for (int q = 0; q < Q; ++q) 
+                    res.buff[p][r] += A.buff[p][q] * B.buff[q][r];
+
+        return res;
+    }
+
     template<typename T, size_t S> 
         static cm::matx<T,S,S> make_iden() 
         { 
@@ -127,7 +151,7 @@ namespace cm {
         }
 
     template<typename T, size_t M, size_t N>
-    static std::ostream& operator<<(std::ostream& os, const matx<T,M,N> matx) {
+    static std::ostream& operator<<(std::ostream& os, const matx<T,M,N>& matx) {
         for (const std::array<T, N>& row : matx.buff)
         {
             for (const T& v : row) 
@@ -137,21 +161,4 @@ namespace cm {
         return os;
     };
 
-    template<typename T, size_t P, size_t Q, size_t R>
-    matx<T,P,R> operator*(const matx<T,P,Q>& A, const matx<T,Q,R>& B) 
-    { 
-        matx<T,P,R> res;
-        T sum = 0; 
-        for (int p = 0; p < P; ++p) { 
-            for (int r = 0; r < R; ++r) 
-            {
-                for (int q = 0; q < Q; ++q) 
-                    sum += A.buff[p][q] * B.buff[q][r];
-                res.buff[p][r] = sum;
-                sum = 0;
-            }
-        }
-
-        return res;
-    }
 }
