@@ -11,55 +11,55 @@ namespace cm {
     class matx 
     { 
         public: 
-            matx() : buff{} {};
+            constexpr matx() : buff{} {};
 
-            matx(const std::array<std::array<T, N>, M>& mat) 
+            constexpr matx(const std::array<std::array<T, N>, M>& mat) 
             { 
                 auto arrIt = buff.begin();
                 for (auto it = mat.begin(); it != mat.end(); ++it)
                     std::copy(it->begin(), it->end(), (arrIt++)->begin());
             }
 
-            matx(const std::array<std::array<T, N>, M>&& mat) 
+            constexpr matx(const std::array<std::array<T, N>, M>&& mat) 
             { 
                 auto arrIt = buff.begin();
                 for (auto it = mat.begin(); it != mat.end(); ++it)
                     std::move(it->begin(), it->end(), (arrIt++)->begin());
             }
 
-            matx(const std::initializer_list<std::initializer_list<T>>& il) 
+            constexpr matx(const std::initializer_list<std::initializer_list<T>>& il) 
             { 
                 auto arrIt = buff.begin();
                 for (auto it = il.begin(); it != il.end(); ++it)
                     std::copy(it->begin(), it->end(), (arrIt++)->begin());
             }
 
-            matx(T v) 
+            constexpr matx(T v) 
             { 
                 for (const auto& row : buff) 
                     row.fill(v);
             };
 
-            matx(const matx& A) 
+            constexpr matx(const matx& A) 
                 : buff{A.buff} {};
 
-            matx(matx&& A) 
+            constexpr matx(matx&& A) 
                 : buff{std::move(A.buff)}
             {};
 
-            matx operator=(matx&& A)
+            constexpr matx operator=(matx&& A)
             {
                 buff = std::move(A.buff);
                 return *this;
             };
 
-            matx operator=(const matx& A)
+            constexpr matx operator=(const matx& A)
             {
                 buff = A.buff;
                 return *this;
             };
 
-            friend matx operator+(const matx& A, const matx& B)
+            constexpr friend matx operator+(const matx& A, const matx& B)
             {
                 matx res;
                 for (int i = 0; i < M; ++i)
@@ -68,7 +68,7 @@ namespace cm {
                 return res;
             };
 
-            friend matx operator-(const matx& A, const matx& B)
+            constexpr friend matx operator-(const matx& A, const matx& B)
             {
                 matx res;
                 for (int i = 0; i < M; ++i)
@@ -77,7 +77,7 @@ namespace cm {
                 return res;
             };
 
-            friend matx operator*(T k, const matx& A)
+            constexpr friend matx operator*(T k, const matx& A)
             {
                 matx res;
                 for (int i = 0; i < M; ++i)
@@ -86,20 +86,13 @@ namespace cm {
                 return res;
             };
 
-            /*
-            template<typename P, size_t Q, size_t R> 
-            friend matx<P, Q, 1> operator*(const matx<P, Q, R>& A, const cm::vec<P, R>& b) 
-            {
-                return A*(matx<P, Q, 1>)b;
-            }
-            */
 
             //TODO: DEFINE
-            T det() const 
+            constexpr T det() const 
             {
             };
 
-            matx<T,N,M> t() const 
+            constexpr matx<T,N,M> t() const 
             {
                 matx<T,N,M> res;
                 for (int i = 0; i < M; ++i) 
@@ -108,7 +101,7 @@ namespace cm {
                 return res;
             };
 
-            friend bool operator==(const matx& A, const matx& B) 
+            constexpr friend bool operator==(const matx& A, const matx& B) 
             { 
                 bool res = true;
                 int i = 0;
@@ -119,7 +112,7 @@ namespace cm {
                 return res;
             };
 
-            operator vec<T, M>() const requires (N == 1)
+            constexpr operator vec<T, M>() const requires (N == 1)
             { 
                 vec<T, M> res;
                 for (size_t i = 0; i < M; ++i) 
@@ -132,7 +125,7 @@ namespace cm {
     };
 
     template<typename T, size_t P, size_t Q, size_t R>
-    matx<T,P,R> operator*(const matx<T,P,Q>& A, const matx<T,Q,R>& B) 
+    constexpr matx<T,P,R> operator*(const matx<T,P,Q>& A, const matx<T,Q,R>& B) 
     { 
         matx<T,P,R> res;
         for (int p = 0; p < P; ++p)  
@@ -144,7 +137,7 @@ namespace cm {
     }
 
     template<typename T, size_t S> 
-    static cm::matx<T,S,S> make_iden() 
+    constexpr static cm::matx<T,S,S> make_iden() 
     { 
         cm::matx<T,S,S> I;
         for (int i = 0; i < S; ++i) 
@@ -154,7 +147,7 @@ namespace cm {
     }
 
     template<typename T, size_t M, size_t N>
-    static std::ostream& operator<<(std::ostream& os, const matx<T,M,N>& matx) {
+    constexpr static std::ostream& operator<<(std::ostream& os, const matx<T,M,N>& matx) {
         for (const std::array<T, N>& row : matx.buff)
         {
             for (const T& v : row) 

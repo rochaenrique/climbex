@@ -11,11 +11,11 @@ namespace cm {
     class vec
     { 
         public:
-            vec() : buff{} {};
+            constexpr vec() : buff{} {};
 
-            vec(const std::array<T, S>& a) : buff{a} {};
+            constexpr vec(const std::array<T, S>& a) : buff{a} {};
 
-            vec(const std::initializer_list<T>& il)
+            constexpr vec(const std::initializer_list<T>& il)
             {
                 auto buffIt = buff.begin();
                 for (auto it = il.begin(); it != il.end(); ++it)
@@ -23,28 +23,28 @@ namespace cm {
             };
 
             template<typename... Args>
-            vec(Args... args) requires (sizeof...(Args) == S)
+            constexpr vec(Args... args) requires (sizeof...(Args) == S)
                 : buff{args...} {};
 
-            vec(T v) { buff.fill(v); };
+            constexpr vec(T v) { buff.fill(v); };
 
-            vec(const vec& a) : buff{a.buff} {};
+            constexpr vec(const vec& a) : buff{a.buff} {};
 
-            vec(vec&& a) : buff{std::move(a.buff)} {};
+            constexpr vec(vec&& a) : buff{std::move(a.buff)} {};
 
-            vec& operator=(const vec& a)
+            constexpr vec& operator=(const vec& a)
             {
                 buff = a.buff;
                 return *this;
             };
 
-            vec& operator=(vec&& a)
+            constexpr vec& operator=(vec&& a)
             {
                 buff = std::move(a.buff);
                 return *this;
             };
 
-            friend vec operator-(const vec& a, const vec& b)
+            constexpr friend vec operator-(const vec& a, const vec& b)
             {
                 vec res;
                 for (int i = 0; i < S; ++i)
@@ -52,9 +52,9 @@ namespace cm {
                 return res;
             };
 
-            friend vec operator-(const vec& a) { return -1*a; }
+            constexpr friend vec operator-(const vec& a) { return -1*a; }
 
-            friend vec operator*(T k, const vec& a)
+            constexpr friend vec operator*(T k, const vec& a)
             {
                 vec res;
                 for (int i = 0; i < S; ++i)
@@ -62,7 +62,7 @@ namespace cm {
                 return res;
             };
 
-            friend T operator*(const vec& a, const vec& b)
+            constexpr friend T operator*(const vec& a, const vec& b)
             {
                 T res = 0;
                 for (int i = 0; i < S; ++i)
@@ -71,7 +71,7 @@ namespace cm {
             };
 
 
-            T mod() const
+            constexpr T mod() const
             {
                 T res = 0;
                 for (const T& v : buff)
@@ -79,8 +79,7 @@ namespace cm {
                 return std::sqrt(res);
             };
 
-
-            friend bool operator==(const vec& a, const vec& b) 
+            constexpr friend bool operator==(const vec& a, const vec& b) 
             { 
                 bool res = true;
                 int i = 0;
@@ -88,12 +87,12 @@ namespace cm {
                 return res;
             };
 
-            friend bool operator>(const vec& a, const vec& b) 
+            constexpr friend bool operator>(const vec& a, const vec& b) 
             {
                 return a.mod() > b.mod();
             };
 
-            operator matx<T,S,1>() const
+            constexpr operator matx<T,S,1>() const
             { 
                 matx<T,S,1> res;
                 for (size_t i = 0; i < S; i++) 
@@ -101,7 +100,7 @@ namespace cm {
                 return res;
             };
 
-            operator matx<T,1,S>() const 
+            constexpr operator matx<T,1,S>() const 
             { return { buff }; };
 
             std::array<T, S> buff;
@@ -111,7 +110,7 @@ namespace cm {
         vec(T, Tail...) -> vec<T, 1 + sizeof...(Tail)>;
 
     template<typename T, size_t S>
-    vec<T,S> operator+(const vec<T,S>& a, const vec<T,S>& b)
+    constexpr vec<T,S> operator+(const vec<T,S>& a, const vec<T,S>& b)
     {
         vec<T,S> res;
         for (size_t i = 0; i < S; ++i)
@@ -120,7 +119,7 @@ namespace cm {
     };
 
     template<typename T, size_t N> requires (N == 3)
-    vec<T,N> cross(const vec<T,N>& a, const vec<T,N>& b)
+    constexpr vec<T,N> cross(const vec<T,N>& a, const vec<T,N>& b)
     {
         vec<T,N> res;
         res.buff[0] = a.buff[1]*b.buff[2]-a.buff[2]*b.buff[1];
@@ -131,12 +130,11 @@ namespace cm {
     };
 
     template<typename T, size_t S>
-    static std::ostream& operator<<(std::ostream& os, const vec<T,S>& vec) 
+    constexpr static std::ostream& operator<<(std::ostream& os, const vec<T,S>& vec) 
     {
         for (const T& el : vec.buff)
             os << el << ", ";
         return os;
     };
-    
 }
 
