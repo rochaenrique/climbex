@@ -15,7 +15,7 @@ int main()
     }};
 
     auto I = cm::make_iden<int,4>();
-    cm::vec<int,4> x = { 1, 2, 3, 4 };
+    cm::vec<int,4> x(1, 2, 3, 4);
 
     std::cout << I*x << std::endl;
 

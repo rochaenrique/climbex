@@ -22,6 +22,10 @@ namespace cm {
                     (*buffIt++) = *it;
             };
 
+            template<typename... Args>
+            vec(Args... args) requires (sizeof...(Args) == S)
+                : buff{args...} {};
+
             vec(T v) { buff.fill(v); };
 
             vec(const vec& a) : buff{a.buff} {};
