@@ -1,14 +1,22 @@
-#include "vec.hpp"
-
 #include <iostream>
+
+#include "ppmath.hpp"
 
 int main() 
 { 
-    cm::vec v = { 1, 6, 0 };
-    cm::vec w = { -2, 5, 0 };
+    cm::matx<int,3> A = {{ { 4, 2, 0 }, 
+        { 0, 8, 1 }, 
+        { 0, 1, 0 }, 
+    }};
+    cm::matx<int,3> B = {{ 
+        { 4, 2, 1 }, 
+        { 2, 0, 4 }, 
+        { 9, 4, 2 }, 
+    }};
 
-    std::cout << v << std::endl;
-    std::cout << w << std::endl;
-    std::cout << v*w << std::endl;
-    std::cout << cm::cross(v, w) << std::endl;
+    auto I = cm::make_iden<int,4>();
+    cm::vec<int,4> x = { 1, 2, 3, 4 };
+
+    std::cout << I*x << std::endl;
+
 }

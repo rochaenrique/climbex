@@ -4,7 +4,10 @@
 #include <iostream>
 
 namespace cm { 
-    template <typename T, size_t M, size_t N>
+    template<typename P, size_t Q>
+    class vec;
+
+    template <typename T, size_t M, size_t N = M>
     class matx 
     { 
         public: 
@@ -116,13 +119,13 @@ namespace cm {
                 return res;
             };
 
-            /*
-            template<typename P, size_t Q>
-            operator cm::vec<P, Q>() const 
+            operator vec<T, M>() const requires (N == 1)
             { 
-                return { buff[0] };
+                vec<T, M> res;
+                for (size_t i = 0; i < M; ++i) 
+                    res.buff[i] = buff[i][0];
+                return res;
             };
-            */
 
             std::array<std::array<T, N>, M> buff;
 
@@ -141,14 +144,14 @@ namespace cm {
     }
 
     template<typename T, size_t S> 
-        static cm::matx<T,S,S> make_iden() 
-        { 
-            cm::matx<T,S,S> I;
-            for (int i = 0; i < S; ++i) 
-                for (int j = 0; j < S; ++j) 
-                    I.buff[i][j] = i == j ? 1 : 0;
-            return I;
-        }
+    static cm::matx<T,S,S> make_iden() 
+    { 
+        cm::matx<T,S,S> I;
+        for (int i = 0; i < S; ++i) 
+            for (int j = 0; j < S; ++j) 
+                I.buff[i][j] = i == j ? 1 : 0;
+        return I;
+    }
 
     template<typename T, size_t M, size_t N>
     static std::ostream& operator<<(std::ostream& os, const matx<T,M,N>& matx) {

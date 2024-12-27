@@ -2,9 +2,11 @@
 #include <initializer_list>
 #include <array>
 #include <iostream>
-#include "matx.hpp"
 
 namespace cm { 
+    template <typename T, size_t M, size_t N>
+    class matx;
+
     template <typename T, size_t S>
     class vec
     { 
@@ -87,11 +89,16 @@ namespace cm {
                 return a.mod() > b.mod();
             };
 
-            template<typename Q, size_t P>
-            operator cm::matx<Q, P, 1>() 
+            operator matx<T,S,1>() const
             { 
-                return { std::array<Q, P>{buff} };
+                matx<T,S,1> res;
+                for (size_t i = 0; i < S; i++) 
+                    res.buff[i][0] = buff[i];
+                return res;
             };
+
+            operator matx<T,1,S>() const 
+            { return { buff }; };
 
             std::array<T, S> buff;
     };
@@ -108,8 +115,6 @@ namespace cm {
         return res;
     };
 
-
-
     template<typename T, size_t N> requires (N == 3)
     vec<T,N> cross(const vec<T,N>& a, const vec<T,N>& b)
     {
@@ -120,46 +125,6 @@ namespace cm {
 
         return res;
     };
-
-    /*
-    template<typename T>
-    class vec<T, 2>
-    {
-        public: 
-            vec(T x, T y) : x(x), y(y) {};
-
-            union { 
-                struct { T x, y; };
-                std::array<T, 2> buff;
-            };
-    };
-
-    template<typename T>
-    class vec<T, 3>
-    {
-        public: 
-            vec(T x, T y, T z) : x(x), y(y), z(z) {};
-
-            union { 
-                struct { T x, y, z; };
-                struct { T r, g, b; };
-                std::array<T, 3> buff;
-            };
-    };
-
-    template<typename T>
-    class vec<T, 4>
-    {
-        public: 
-            vec(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {};
-
-            union { 
-                struct { T x, y, z, w; };
-                struct { T r, g, b, a; };
-                std::array<T, 4> buff;
-            };
-    };
-    */
 
     template<typename T, size_t S>
     static std::ostream& operator<<(std::ostream& os, const vec<T,S>& vec) 
