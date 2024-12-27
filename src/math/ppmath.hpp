@@ -12,14 +12,14 @@ namespace cm {
     #define I_MATX(T,S) cm::make_iden<T,S>()
 
     template<typename T, size_t P, size_t Q>
-    inline vec<T,Q> operator*(c_matx<T,P,Q>& A, c_vec<T,Q>& x) 
+    constexpr inline vec<T,Q> operator*(c_matx<T,P,Q>& A, c_vec<T,Q>& x) 
     {
         return A*(matx<T,Q,1>)x;
     };
 
     //translate 
     template<typename T, size_t S>
-    matx<T,S+1> transl(c_vec<T,S>& vec, 
+    constexpr matx<T,S+1> transl(c_vec<T,S>& vec, 
             c_matx<T,S+1>& mat = I_MATX(T,S+1))
     {
         matx<T,S+1> res = mat;
@@ -39,7 +39,7 @@ namespace cm {
     };
 
     template<typename T, size_t S>
-    matx<T,S> scale(T k, c_matx<T,S>& mat = I_MATX(T,S))
+    constexpr matx<T,S> scale(T k, c_matx<T,S>& mat = I_MATX(T,S))
     {
         matx<T,S> res = mat;
         for (size_t i = 0; i < S-1; ++i) 
@@ -49,11 +49,11 @@ namespace cm {
 
     //rotate
     template<typename T, size_t S> requires (S == 3)
-    matx<T,S+1> rotate(c_vec<T,S>& axis, double a)
+    constexpr matx<T,S+1> rotate(c_vec<T,S>& axis, double a)
     {
-        T x =  axis[0];
-        T y =  axis[1];
-        T z =  axis[2];
+        constexpr T x =  axis[0];
+        constexpr T y =  axis[1];
+        constexpr T z =  axis[2];
         double inv = 1.0-cos(a);
 
         return {
