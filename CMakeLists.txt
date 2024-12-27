@@ -19,9 +19,6 @@ set(SOURCES
     src/renderer/VertexArray.cpp
     src/renderer/VertexBuffer.cpp
     src/renderer/Texture.cpp
-
-    src/math/matx.hpp
-    src/math/vec.hpp
 )
 
 if (CBX_EXAMPLES)  
